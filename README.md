@@ -17,9 +17,9 @@ _WIP_
 
 ## Contributors
 * Oscar 
-* AbdulQudus Adebogun
 * Abdulazeez Abdulazeez Adeshina
-* Ola-JOhn Ajiboye
+* Ola-John Ajiboye
+* AbdulQudus 
 
 
 ## Licence
