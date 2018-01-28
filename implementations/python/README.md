@@ -1,0 +1,4 @@
+# Soccergist - Python
+
+
+## Contributors

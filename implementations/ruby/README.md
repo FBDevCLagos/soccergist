@@ -1,0 +1,5 @@
+# Soccergist - Ruby
+
+
+## Contributors
+* Oscar 
