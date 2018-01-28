@@ -2,4 +2,3 @@
 
 
 ## Contributors
-* Oscar 
