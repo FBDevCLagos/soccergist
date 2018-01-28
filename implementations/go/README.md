@@ -1,0 +1,5 @@
+# Soccergist - Go
+
+
+## Contributors
+* Oscar 

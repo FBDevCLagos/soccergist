@@ -1,0 +1,5 @@
+# Soccergist - Python
+
+
+## Contributors
+* Oscar 

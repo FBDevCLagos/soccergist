@@ -1,0 +1,5 @@
+# Soccergist - PHP
+
+
+## Contributors
+* Oscar 

@@ -1,0 +1,5 @@
+# Soccergist - Javascript
+
+
+## Contributors
+* Oscar 
