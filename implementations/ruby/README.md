@@ -3,4 +3,4 @@
 
 ## Contributors
 * Oscar 
-* [Ola-JOhn Ajiboye] (https://github.com/OlaJohn-Ajiboye)
+* [Ola-John Ajiboye](https://github.com/OlaJohn-Ajiboye)
