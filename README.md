@@ -20,6 +20,7 @@ _WIP_
 * Abdulazeez Abdulazeez Adeshina
 * Ola-JOhn Ajiboye
 * AbdulQudus Adebogun
+* Ugbala Valentino
 
 ## Licence
 The learning map is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
