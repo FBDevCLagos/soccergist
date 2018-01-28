@@ -18,6 +18,7 @@ _WIP_
 ## Contributors
 * Oscar 
 * Abdulazeez Abdulazeez Adeshina
+* Ola-JOhn Ajiboye
 
 ## Licence
 The learning map is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
