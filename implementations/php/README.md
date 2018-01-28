@@ -2,4 +2,4 @@
 
 
 ## Contributors
-* AbdulQudus
+* AbdulQudus Adebogun
