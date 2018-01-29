@@ -1,5 +1,6 @@
 # HOW TO CREATE A FACEBOOK APP
 _- Jeremiah Heir_
+
 The second step to take when creating your bot is to create a Facebook app. The Facebook app you'll create will be similar to apps used for every other Facebook product offerings such as [Facebook Login](https://developers.facebook.com/docs/facebook-login), [Account kit](https://developers.facebook.com/docs/accountkit), [Facebook Sharing](https://developers.facebook.com/docs/sharing/overview) etc. The significant difference is you will add and use the Messenger product addon to your app.
 
 With the Messenger product addon, your Facebook app will serve as the connection between your Facebook page and the hosted backend for your bot. The addon will allow you specify necessary information and configurations such as 
