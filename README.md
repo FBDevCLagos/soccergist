@@ -16,6 +16,8 @@ _WIP_
 
 
 ## Contributors
+# Note
+### **Please** add your name below the other names not **above** them.
 * Oscar 
 * Abdulazeez Abdulazeez Adeshina
 * Ola-JOhn Ajiboye
