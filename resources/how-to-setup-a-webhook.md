@@ -13,10 +13,12 @@ A webhook is a URL that will be "called" once an event (or a set of events) occu
 
 Of the three main pieces that make up a bot, the webhook url connects the two pieces that live on Facebook (i.e. Facebook page and Facebook app) to your bot backend. A typical request flow is as follows
 * A user interacts with your bot on messenger triggering an event
-* Facebook packages information about the user event and sends to your backend via the webhook
-* The backend, on receipt of the event package, parses the request and decides on a response
-* The backend packages the response in one of the many Facebook acceptable response template and sends this off to Facebook 
-* Facebook, on receipt of the response, parses it (and if all is well an good) displays the response as requested to user.
+* Facebook checks if your app is subscribed to the event that was triggered. The flow terminates here is it's not subscribed otherwise it continues.
+* Facebook packages information about the user event and sends to your backend via the registered webhook
+* Your backend, on receipt of the event payload sends an acknowledgment to Facebook that it received the payload. This is in the form of a 200 response status.
+* Your backend parses the event payload from the request and decides on a response
+* Your backend packages the response in one of the many Facebook acceptable response template and sends this off to Facebook
+* Facebook, on receipt of the response package, parses it (and if all is well and good) displays it to the user.
 
 ## Setting up a webhook
 
