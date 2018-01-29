@@ -17,6 +17,7 @@ _WIP_
 
 ## Contributors
 * Oscar 
+* Shodipo Ayomide
 * Abdulazeez Abdulazeez Adeshina
 * Ola-JOhn Ajiboye
 * AbdulQudus Adebogun
