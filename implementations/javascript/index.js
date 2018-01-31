@@ -17,7 +17,7 @@ app.get('/webhook', (req, res) => {
         req.query['hub.verify_token'] == (process.env.VERIFY_TOKEN) ) {
             res.status(200).send(req.query['hub.challenge']);
         } else {
-            res.status(403).send('')
+            res.status(403).send('Error, you have passed wrong parameters')
         }
 });
 
