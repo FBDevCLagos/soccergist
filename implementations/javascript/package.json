@@ -1,0 +1,32 @@
+{
+  "name": "soccergist-bot",
+  "version": "1.0.0",
+  "description": "Bot to deliver everything socccer",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "dotenv": "^5.0.0",
+    "express": "^4.16.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mcdavid95/soccergist-bot.git"
+  },
+  "keywords": [
+    "soccer",
+    "sports",
+    "news",
+    "scores"
+  ],
+  "author": "Mcdavid",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mcdavid95/soccergist-bot/issues"
+  },
+  "homepage": "https://github.com/Mcdavid95/soccergist-bot#readme"
+}
