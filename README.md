@@ -23,8 +23,8 @@ _WIP_
 * Ola-JOhn Ajiboye
 * AbdulQudus Adebogu
 * Ugbala Valentino
-* Shodipo Ayomide
 * Mcdavid Emereuwa
+* Shodipo Ayomide
 
 ## Licence
 The learning map is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
