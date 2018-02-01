@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/LordRahl90/botDevelopment/handlers"
+	"github.com/LordRahl90/soccergist/implementations/go/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -14,6 +14,7 @@ func main() {
 
 	router.HandleFunc("/", handlers.HomeHandler).Methods("GET")
 	router.HandleFunc("/webhook", handlers.WebHookHandler).Methods("GET")
+	router.HandleFunc("/webhook", handlers.WebHookPostHandler).Methods("POST")
 
 	fmt.Println("Server Starting up")
 	log.Fatal(http.ListenAndServe(":3000", router))
