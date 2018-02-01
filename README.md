@@ -21,8 +21,9 @@ _WIP_
 * Oscar 
 * Abdulazeez Abdulazeez Adeshina
 * Ola-JOhn Ajiboye
-* AbdulQudus Adebogun
+* AbdulQudus Adebogu
 * Ugbala Valentino
+* Shodipo Ayomide
 * Mcdavid Emereuwa
 
 ## Licence
