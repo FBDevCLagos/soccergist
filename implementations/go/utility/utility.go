@@ -2,11 +2,9 @@ package utility
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -85,7 +83,6 @@ func FailOnError(err error, msg string) {
 
 //GetSecretKey - Retrieve the secret key.
 func GetSecretKey() string {
-	fmt.Println(os.Getwd())
 	data, err := ioutil.ReadFile(".env")
 	FailOnError(err, "Cannot Read The described file")
 

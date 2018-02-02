@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"soccergist/implementations/go/utility"
 )
 
@@ -86,7 +85,6 @@ func WebHookHandler(w http.ResponseWriter, r *http.Request) {
 
 //WebHookPostHandler - function to handle webhook post requests
 func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Body)
 	var jsonRequest JSONRequest
 	err := json.NewDecoder(r.Body).Decode(&jsonRequest)
 	utility.FailOnError(err, "Cannot decode this request data successfully!!")
@@ -96,6 +94,9 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	senderID := messaging.Sender.ID
 	message := messaging.Message.Text
+
+	// fmt.Println("Sender ID is: ", senderID)
+	// fmt.Println("Reciever ID is: ", messaging.Recipient.ID)
 
 	if senderID == "" {
 		fmt.Fprint(w, utility.ReturnErrorMessage("Sender ID not found", "Sender Not Found"))
@@ -123,10 +124,6 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 	b, err := json.Marshal(jsonResponse)
 	utility.FailOnError(err, "Cannot Convert this to JSON")
 	responseString := string(b)
-
-	fmt.Println(responseString)
-
-	fmt.Println(os.Getwd())
 
 	//sending the post request
 	accessToken := utility.GetSecretKey()
