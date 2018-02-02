@@ -3,7 +3,7 @@
 Install go-lang on your system http://golang.org
 
 
-# Running the programme
+# Running the program
 To run the application from this repo, navigate to the go folder under implementations and run this command
 
 * Create a new file .env in the go folder and copy the content of .env.example to it or just run "cp .env .env.example"
