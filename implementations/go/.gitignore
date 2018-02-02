@@ -1,1 +1,4 @@
 ./ngrok
+./.env
+./utility/.env
+./.DS_Store

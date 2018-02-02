@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/LordRahl90/soccergist/implementations/go/handlers"
+	"soccergist/implementations/go/handlers"
+
 	"github.com/gorilla/mux"
 )
 

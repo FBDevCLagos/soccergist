@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/LordRahl90/soccergist/implementations/go/utility"
+	"os"
+	"soccergist/implementations/go/utility"
 )
 
 //JSONRequest struct
@@ -126,8 +126,10 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(responseString)
 
+	fmt.Println(os.Getwd())
+
 	//sending the post request
-	accessToken := "EAAEDNuZAnTygBAMDqKr4H3eJQQnZBhyi25gbotURZBzOSO0nhzkhSdkIf2vCiA2sM9u4L3h2Hfd6MgY2iKr70SLWoeWnhuQ8RcSZBzjXSjBfaqi4tufTO20Dq1PMDZC1kHlhR8mYAH6pZCL7F122HKUEwgZA7DbQeU7oHqE3D43mwZDZD"
+	accessToken := utility.GetSecretKey()
 	endPoint := "https://graph.facebook.com/v2.6/me/messages?access_token=" + accessToken
 	request, err := http.NewRequest("POST", endPoint, bytes.NewBuffer([]byte(responseString))) //creates a request
 	request.Header.Set("Content-Type", "application/json")

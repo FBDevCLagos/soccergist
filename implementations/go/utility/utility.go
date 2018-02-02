@@ -2,8 +2,11 @@ package utility
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -78,4 +81,24 @@ func FailOnError(err error, msg string) {
 		log.Println(msg)
 		log.Fatal(err)
 	}
+}
+
+//GetSecretKey - Retrieve the secret key.
+func GetSecretKey() string {
+	fmt.Println(os.Getwd())
+	data, err := ioutil.ReadFile(".env")
+	FailOnError(err, "Cannot Read The described file")
+
+	var env Env
+
+	err = json.Unmarshal(data, &env)
+	FailOnError(err, "Cannot Unmarhall this data")
+
+	token := env.Token
+	return token
+}
+
+//Env - The Environment Variable struct
+type Env struct {
+	Token string `json:"token"`
 }
