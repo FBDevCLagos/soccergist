@@ -21,6 +21,19 @@ app.get('/webhook', (req, res) => {
         }
 });
 
+app.post('/webhook', (req, res) => {
+        const senderId =  req.body.entry[0].messaging[0].sender.id;
+        const senderMessage = req.body.entry[0].messaging[0].message.text;
+        res.status(201).json({
+            "recipient": {
+                "id": senderId
+            },
+            "message": {
+                "text": `I have received your message: "${senderMessage}", and I've sent it to my Oga at the top: Oscar`
+            }
+        })
+})
+
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`Listening on port ${server.address().port}`);
 });
