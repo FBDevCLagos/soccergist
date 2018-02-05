@@ -2,6 +2,8 @@ package com.lord.rahl.landon.web.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lord.rahl.landon.web.dataobjects.*;
+import jdk.internal.org.objectweb.asm.TypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,6 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -39,7 +48,6 @@ public class WebHookServiceController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String handlePostCallback(@RequestBody String stringToParse){
-        System.out.println(stringToParse);
         ObjectMapper objectMapper=new ObjectMapper();
         JSONResponse response=new JSONResponse();
         String fbResponse="";
@@ -69,21 +77,24 @@ public class WebHookServiceController {
 
             String recievedMessage=message.getText();
 
-
-
-
-
             Recipient rec=new Recipient();
             rec.setId(sender.getId());
             ResponseMessage responseMessage=new ResponseMessage();
             responseMessage.setText("Message Has been received ("+recievedMessage+") and has been set to my oga at the top... LordRahl");
 
-
             response.setRecipient(rec);
             response.setMessage(responseMessage);
 
             //external URL
-            String accessCode="EAAEDNuZAnTygBAJEOqZCyxUsEGmq3HW0XEnleiZCRsFp7VPbvLsZCRa3GRsGe2AabSdwdbgt4dmElZBK2gay0uPpkhgDZCwvWcUEcT6COUChSevNZAhWFWJSBKBlA8E7LwN8dK1nTStfCtkXXrvwU12WBYWKwqIiZABz0RK6CEPvhAZDZD";
+            File file=new ClassPathResource("env.json").getFile();
+            if(!file.exists()){
+                System.out.println("Invalid Access Token Provided... Copy the content of env.example.json to env.json and update the access token");
+                return "An error occurred with the Access Token Provided";
+            }
+
+            Map<String,Object> dataMap=objectMapper.readValue(file,HashMap.class);
+
+            String accessCode=(String)dataMap.get("token");
             String externalUrl="https://graph.facebook.com/v2.6/me/messages?access_token="+accessCode;
 
 
