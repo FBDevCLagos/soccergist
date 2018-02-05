@@ -132,6 +132,8 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 	request.Header.Set("Content-Type", "application/json")
 	utility.FailOnError(err, "Cannot Complete this request")
 
+	fmt.Println("Going to Facebok")
+
 	client := utility.GetHTTPClient()
 	response, err := client.Do(request) //sends the request to the desired endpoint and keeps the response
 	utility.FailOnError(err, "Cannot Process this request")
@@ -140,6 +142,6 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(response.Body) //gets the body of the response
 	fmt.Println(string(body))
 
-	w.Header().Add("COntent-Type", "application/json")
+	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, responseString) //prints the good news to the user
 }
