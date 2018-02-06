@@ -32,7 +32,6 @@ func verifyWebhook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 }
 
 func handleWebhookEvents(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	io.Copy(os.Stdout, r.Body)
 	// Parse the request payload
 	payload := webhookPayload{}
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -50,6 +49,8 @@ func handleWebhookEvents(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 				switch {
 				case !reflect.DeepEqual(messaging.Message, messageEvent{}):
 					handleMessageEvent(messaging.Message, messaging.Sender.ID)
+				case !reflect.DeepEqual(messaging.Postback, postbackEvent{}):
+					handlePostbackEvent(messaging.Postback, messaging.Sender.ID)
 				default:
 					log.Printf("No handler found for: %+v\n", messaging.Message)
 				}
@@ -58,10 +59,37 @@ func handleWebhookEvents(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 }
 
-func handleMessageEvent(msgEvnt messageEvent, senderID string) {
+func handlePostbackEvent(msgEvnt postbackEvent, senderID string) {
 	reply := textResponse{}
 	reply.Recipient.ID = senderID
-	reply.Message.Text = fmt.Sprintf("I received your message: '%s', and I've sent it to my Oga at the top Oscar", msgEvnt.Text)
+	reply.Message.Text = fmt.Sprintf("%s - coming soon 🤠", msgEvnt.Title)
+	sendResponse(reply)
+}
+
+func handleMessageEvent(msgEvnt messageEvent, senderID string) {
+	reply := templateResponse{}
+	reply.Recipient.ID = senderID
+	reply.Message.Attachment.Type = "template"
+	reply.Message.Attachment.Payload.TemplateType = "button"
+	reply.Message.Attachment.Payload.Text = "What do you want to do?"
+	matchSchedulesPostbackBtn := button{
+		Type:    "postback",
+		Title:   "View match schedules",
+		Payload: "match-schedules-postback",
+	}
+
+	leagueTablePostbackBtn := button{
+		Type:    "postback",
+		Title:   "View league table",
+		Payload: "league-table-postback",
+	}
+
+	leagueHighlightsBtn := button{
+		Type:    "postback",
+		Title:   "View Highlights",
+		Payload: "league-highlights-postback",
+	}
+	reply.Message.Attachment.Payload.Buttons = []button{matchSchedulesPostbackBtn, leagueHighlightsBtn, leagueTablePostbackBtn}
 	sendResponse(reply)
 }
 
@@ -78,13 +106,17 @@ func sendResponse(payload interface{}) {
 	url := fmt.Sprintf("%saccess_token=%s", fbURL, AccessToken)
 
 	req, err := http.NewRequest("POST", url, body)
+	if err != nil {
+
+	}
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 
-	_, err = client.Do(req)
+	res, err := client.Do(req)
 	if err != nil {
 		log.Println("Sending response resulted in an error: ", err)
 	}
+	io.Copy(os.Stdout, res.Body)
 }
 
 func setupRouter() *httprouter.Router {
