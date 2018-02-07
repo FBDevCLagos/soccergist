@@ -4,6 +4,14 @@ public class Recipient {
 
     private String id;
 
+    public Recipient(){
+
+    }
+
+    public Recipient(String id){
+        this.id=id;
+    }
+
     public String getId() {
         return id;
     }
