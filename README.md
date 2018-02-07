@@ -21,9 +21,10 @@ _WIP_
 * Oscar 
 * Abdulazeez Abdulazeez Adeshina
 * Ola-JOhn Ajiboye
-* AbdulQudus Adebogun
+* AbdulQudus Adebogu
 * Ugbala Valentino
 * Mcdavid Emereuwa
+* Shodipo Ayomide
 
 ## Licence
 The learning map is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
