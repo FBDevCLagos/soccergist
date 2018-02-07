@@ -25,24 +25,61 @@ app.get('/webhook', (req, res) => {
 
 app.post('/webhook', (req, res) => {
     const senderId =  req.body.entry[0].messaging[0].sender.id;
-    const senderMessage = req.body.entry[0].messaging[0].message.text;
-    // So here we've got the request i.e req
-        
-    const responseText = `I have received your message: "${senderMessage}", and I've sent it to my Oga at the top: Oscar`
 
-    sendTextMessage(senderId, responseText) // Here we prepare and send off the response we want our bot to give the sender
+    // message object
+    const message = req.body.entry[0].messaging[0];
+    // So here we've got the request i.e req
+
+    sendTextMessage(senderId, handleFeedback(message)) // Here we prepare and send off the response we want our bot to give the sender
     res.sendStatus(200) // Then we tell Facebook all went well        
 })
 
-const sendTextMessage = (recipientId, messageText) => {
+// handle message type
+const handleFeedback = (message) => {
+    let responseFeedback;
+    if("message" in message) {
+        responseFeedback = {
+            "attachment":{
+                "type":"template",
+                "payload":{
+                    "template_type":"button",
+                    "text":"What do you want to do?",
+                    "buttons":[
+                        {
+                            "type":"postback", 
+                            "title":"View match schedules",
+                            "payload":"match schedules"
+                            
+                        },
+                        {
+                            "type":"postback",
+                            "title":"View Highlights",
+                            "payload":"league highlights"
+                        }, 
+                        {
+                            "type":"postback",
+                            "title":"View league table",
+                            "payload":"league table"
+                        }
+                    ]
+                }
+            }
+        };
+    } else if ('postback' in message) {
+        responseFeedback = {
+            text: `${message.postback.payload} - is coming soon.`
+        };
+    }
+    return responseFeedback;
+}
+
+const sendTextMessage = (recipientId, messageFeedback) => {
     // we package the bot response in FB required format
     const messageData = {
       recipient: {
         id: recipientId
       },
-      message: {
-        text: messageText,
-      }
+      message: messageFeedback
     };
 
     // We send off the response to FB
