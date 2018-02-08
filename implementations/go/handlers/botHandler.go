@@ -95,9 +95,6 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 	senderID := messaging.Sender.ID
 	message := messaging.Message.Text
 
-	// fmt.Println("Sender ID is: ", senderID)
-	// fmt.Println("Reciever ID is: ", messaging.Recipient.ID)
-
 	if senderID == "" {
 		fmt.Fprint(w, utility.ReturnErrorMessage("Sender ID not found", "Sender Not Found"))
 		return
