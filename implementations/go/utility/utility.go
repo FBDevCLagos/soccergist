@@ -79,7 +79,7 @@ func GetHTTPClient() *http.Client {
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Println(msg)
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 

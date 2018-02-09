@@ -14,6 +14,12 @@ type JSONResponse struct {
 
 //ResponseMessage struct
 type ResponseMessage struct {
+	Text       string      `json:"text"`
+	Attachment *Attachment `json:"attachment"`
+}
+
+// ResponseMessageWithAttachment - function
+type ResponseMessageWithAttachment struct {
 	Text       string     `json:"text"`
 	Attachment Attachment `json:"attachment"`
 }
@@ -33,6 +39,7 @@ type MessagingItem struct {
 	Message   Message   `json:"message"`
 	PostBack  PostBack  `json:"postback"`
 	Read      Read      `json:"read"`
+	Delivery  Delivery  `json:"delivery"`
 }
 
 //Message struct handles the message that is being sent across.
@@ -51,7 +58,7 @@ type PostBack struct {
 //Delivery struct
 type Delivery struct {
 	Mids      []string `json:"mids"`
-	Watermark string   `json:"watermark"`
+	Watermark int64    `json:"watermark"`
 	Seq       int      `json:"seq"`
 }
 

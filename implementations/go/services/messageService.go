@@ -43,7 +43,7 @@ func ShowDefaultMenu(sender dataobject.Sender) (response string) {
 	buttons := []dataobject.Button{scheduleButton, highlightButton, tableButton}
 
 	responsePayload := dataobject.Payload{
-		Text:         "Hi, What do you want to do?",
+		Text:         "Hi, What do you want to do? Go Implentation",
 		TemplateType: "button",
 		Buttons:      buttons,
 	}
@@ -54,7 +54,7 @@ func ShowDefaultMenu(sender dataobject.Sender) (response string) {
 	}
 
 	responseMessage := dataobject.ResponseMessage{
-		Attachment: attachmentResponse,
+		Attachment: &attachmentResponse,
 	}
 
 	jsonResponse := dataobject.JSONResponse{
