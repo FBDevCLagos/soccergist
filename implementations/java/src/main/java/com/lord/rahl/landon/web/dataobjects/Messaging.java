@@ -1,13 +1,20 @@
 package com.lord.rahl.landon.web.dataobjects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Messaging {
 
     private Sender sender;
+
     private Recipient recipient;
     private Delivery delivery;
     private long timestamp;
     private Message message;
+
     private Read read;
+
+    private PostBack postback;
 
     public Sender getSender() {
         return sender;
@@ -16,6 +23,7 @@ public class Messaging {
     public void setSender(Sender sender) {
         this.sender = sender;
     }
+
 
     public Recipient getRecipient() {
         return recipient;
@@ -55,5 +63,13 @@ public class Messaging {
 
     public void setRead(Read read) {
         this.read = read;
+    }
+
+    public PostBack getPostback() {
+        return postback;
+    }
+
+    public void setPostback(PostBack postback) {
+        this.postback = postback;
     }
 }
