@@ -1,14 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
 	"reflect"
+
+	"github.com/FBDevCLagos/soccergist/implementations/go/utils"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,7 +17,10 @@ import (
 // It can be any string provide it matches what you will enter in the setup prompt
 const VerificationToken = "bots are awesome"
 
-var AccessToken = os.Getenv("ACCESS_TOKEN")
+var (
+	AccessToken = os.Getenv("ACCESS_TOKEN")
+	fbURL       = fmt.Sprintf("https://graph.facebook.com/v2.6/me/messages?access_token=%s", AccessToken)
+)
 
 func verifyWebhook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	mode := r.URL.Query().Get("hub.mode")
@@ -59,11 +62,20 @@ func handleWebhookEvents(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 }
 
+var postbackHandlers = map[string]func(postbackEvent, string){
+	"league-table-postback": handleLeagueTablePostbackEvent,
+}
+
 func handlePostbackEvent(msgEvnt postbackEvent, senderID string) {
-	reply := textResponse{}
-	reply.Recipient.ID = senderID
-	reply.Message.Text = fmt.Sprintf("%s - coming soon 🤠", msgEvnt.Title)
-	sendResponse(reply)
+	postbackHandler, ok := postbackHandlers[msgEvnt.Payload]
+	if !ok {
+		reply := textResponse{}
+		reply.Recipient.ID = senderID
+		reply.Message.Text = fmt.Sprintf("%s - coming soon 🤠", msgEvnt.Title)
+		sendResponse(reply)
+	} else {
+		postbackHandler(msgEvnt, senderID)
+	}
 }
 
 func handleMessageEvent(msgEvnt messageEvent, senderID string) {
@@ -72,51 +84,17 @@ func handleMessageEvent(msgEvnt messageEvent, senderID string) {
 	reply.Message.Attachment.Type = "template"
 	reply.Message.Attachment.Payload.TemplateType = "button"
 	reply.Message.Attachment.Payload.Text = "What do you want to do?"
-	matchSchedulesPostbackBtn := button{
-		Type:    "postback",
-		Title:   "View match schedules",
-		Payload: "match-schedules-postback",
-	}
 
-	leagueTablePostbackBtn := button{
-		Type:    "postback",
-		Title:   "View league table",
-		Payload: "league-table-postback",
-	}
+	matchSchedulesPostbackBtn := buildPostbackBtn("View match schedules", "match-schedules-postback")
+	leagueTablePostbackBtn := buildPostbackBtn("View league table", "league-table-postback")
+	leagueHighlightsBtn := buildPostbackBtn("View Highlights", "league-highlights-postback")
 
-	leagueHighlightsBtn := button{
-		Type:    "postback",
-		Title:   "View Highlights",
-		Payload: "league-highlights-postback",
-	}
 	reply.Message.Attachment.Payload.Buttons = []button{matchSchedulesPostbackBtn, leagueHighlightsBtn, leagueTablePostbackBtn}
 	sendResponse(reply)
 }
 
 func sendResponse(payload interface{}) {
-	// Parse the response payload
-	pkg, err := json.Marshal(payload)
-	if err != nil {
-		log.Println("Sending response parsing in an error: ", err)
-		return
-	}
-	body := bytes.NewBuffer(pkg)
-
-	fbURL := "https://graph.facebook.com/v2.6/me/messages?"
-	url := fmt.Sprintf("%saccess_token=%s", fbURL, AccessToken)
-
-	req, err := http.NewRequest("POST", url, body)
-	if err != nil {
-
-	}
-	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
-
-	res, err := client.Do(req)
-	if err != nil {
-		log.Println("Sending response resulted in an error: ", err)
-	}
-	io.Copy(os.Stdout, res.Body)
+	utils.APIRequest(fbURL, "POST", payload)
 }
 
 func setupRouter() *httprouter.Router {

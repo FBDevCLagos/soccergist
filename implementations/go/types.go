@@ -47,9 +47,11 @@ type templateResponse struct {
 		Attachment struct {
 			Type    string `json:"type,omitempty"`
 			Payload struct {
-				TemplateType string   `json:"template_type,omitempty"`
-				Text         string   `json:"text,omitempty"`
-				Buttons      []button `json:"buttons,omitempty"`
+				TemplateType    string    `json:"template_type,omitempty"`
+				TopElementStyle string    `json:"top_element_style,omitempty"`
+				Text            string    `json:"text,omitempty"`
+				Buttons         []button  `json:"buttons,omitempty"`
+				Elements        []element `json:"elements,omitempty"`
 			} `json:"payload,omitempty"`
 		} `json:"attachment,omitempty"`
 	} `json:"message,omitempty"`
@@ -59,4 +61,17 @@ type button struct {
 	Type    string `json:"type,omitempty"`
 	Title   string `json:"title,omitempty"`
 	Payload string `json:"payload,omitempty"`
+}
+
+type element struct {
+	Buttons       []button `json:"buttons,omitempty"`
+	Title         string   `json:"title,omitempty"`
+	Subtitle      string   `json:"subtitle,omitempty"`
+	ImageURL      string   `json:"image_url,omitempty"`
+	DefaultAction *struct {
+		Type                string `json:"type,omitempty"`
+		URL                 string `json:"url,omitempty"`
+		MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
+		WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
+	} `json:"default_action,omitempty"`
 }
