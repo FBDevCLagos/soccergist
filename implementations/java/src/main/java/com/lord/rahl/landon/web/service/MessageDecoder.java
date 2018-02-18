@@ -37,7 +37,6 @@ public class MessageDecoder {
             }
             else if(postBack!=null){
                 result=new PostBackService(postBack,sender).handlePostback();
-                System.out.println(result);
             }
             else{
                 result="Unhandled Callback";

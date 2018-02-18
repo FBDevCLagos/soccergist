@@ -2,7 +2,7 @@ package com.lord.rahl.landon.web.dataobjects;
 
 import java.util.List;
 
-public class Payload {
+public class ButtonPayload implements com.lord.rahl.landon.web.idataobjects.Payload {
     private String template_type;
     private String text;
     private List<Button> buttons;
