@@ -14,10 +14,16 @@ public class PostBackService {
     private ObjectMapper objectMapper = new ObjectMapper();
     private ExternalService externalService;
 
+
     public PostBackService() {
         externalService = new ExternalService();
     }
 
+    /**
+     * Constructor to be called in case a value is passed..... Constructor Overloading.
+     * @param postBack
+     * @param sender
+     */
     public PostBackService(PostBack postBack, Sender sender) {
         this.postBack = postBack;
         this.sender = sender;
@@ -28,7 +34,7 @@ public class PostBackService {
     /**
      * Handle the postback and triggers the appropriate method within the class.
      *
-     * @return
+     * @return String response
      */
     public String handlePostback() {
         String payload = postBack.getPayload();
@@ -46,10 +52,7 @@ public class PostBackService {
             ExternalService externalService = new ExternalService();
             response = externalService.sendPostRequest(responseString);
         }
-
         return response;
-
-//        return response;
     }
 
 
@@ -75,7 +78,7 @@ public class PostBackService {
     }
 
     /**
-     * Builds the league table.
+     * Builds the league table response.
      *
      * @return
      */
@@ -87,7 +90,6 @@ public class PostBackService {
             JsonNode standings = node.get("standing");
 
             List<LeagueElement> elements = new ArrayList<>();
-//            for(int i=0; i<standings.size(); i++){
             for (int i = 0; i < 4; i++) {
                 JsonNode standing = standings.get(i);
                 String position = standing.get("position").asText();
