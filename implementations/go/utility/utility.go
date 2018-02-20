@@ -116,6 +116,20 @@ func SendPostRequest(requestBody string) (response string) {
 	return response
 }
 
+//SendGetRequest - function to send get request to external service
+func SendGetRequest(url string) (response string) {
+	client := GetHTTPClient()
+	extResponse, err := client.Get(url)
+	FailOnError(err, "An error occurred while processing the request.")
+
+	defer extResponse.Body.Close()
+	contents, err := ioutil.ReadAll(extResponse.Body)
+	FailOnError(err, "Cannot Read the content of the response")
+
+	response = string(contents)
+	return
+}
+
 //Env - The Environment Variable struct
 type Env struct {
 	Token string `json:"token"`

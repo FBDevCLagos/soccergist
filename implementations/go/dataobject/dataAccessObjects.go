@@ -1,5 +1,29 @@
 package dataobject
 
+//TeamLogos - Contains the logo of each team
+var TeamLogos = map[string]string{
+	"Manchester City FC":      "https://logoeps.com/wp-content/uploads/2011/08/manchester-city-logo-vector.png",
+	"Manchester United FC":    "https://logoeps.com/wp-content/uploads/2011/08/manchester-united-logo-vector.png",
+	"Liverpool FC":            "https://logoeps.com/wp-content/uploads/2011/08/liverpool-logo-vector.png",
+	"Chelsea FC":              "https://logoeps.com/wp-content/uploads/2011/08/chelsea-logo-vector.png",
+	"Tottenham Hotspur FC":    "https://logoeps.com/wp-content/uploads/2012/02/tottenham-hotspur-fc-logo-vector.jpg",
+	"Arsenal FC":              "https://logoeps.com/wp-content/uploads/2011/05/arsenal-logo-vector.png",
+	"Burnley FC":              "http://logovector.net/wp-content/uploads/2014/05/363404-burnley-fc-logo.gif",
+	"Leicester City FC":       "http://logovector.net/wp-content/uploads/2013/06/221992-leicester-city-fc-1-logo.gif",
+	"Everton FC":              "https://logoeps.com/wp-content/uploads/2012/02/everton-fc-logo-vector.jpg",
+	"AFC Bournemouth":         "http://logovector.net/wp-content/uploads/2010/04/221104-bournemouth-fc-logo.gif",
+	"Watford FC":              "http://logovector.net/wp-content/uploads/2012/02/222037-watford-fc-0-logo.gif",
+	"West Ham United FC":      "https://logoeps.com/wp-content/uploads/2012/12/west-ham-united-logo-vector.png",
+	"Newcastle United FC":     "https://logoeps.com/wp-content/uploads/2011/08/newcastle-united-fc-logo-200x200.jpg",
+	"Brighton & Hove Albion":  "http://logovector.net/wp-content/uploads/2014/02/326020-brighton-hove-albion-fc-logo.jpg",
+	"Crystal Palace FC":       "http://logovector.net/wp-content/uploads/2010/01/350045-crystal-palace-fc-logo.gif",
+	"Swansea City FC":         "https://logoeps.com/wp-content/uploads/2012/04/swansea-city-vector.gif",
+	"Huddersfield Town":       "http://logovector.net/wp-content/uploads/2013/01/348872-huddersfield-town-fc-1-logo.png",
+	"Southampton FC":          "https://logoeps.com/wp-content/uploads/2012/11/southampton-f.c-logo-vector.png",
+	"Stoke City FC":           "https://logoeps.com/wp-content/uploads/2012/04/stoke-city-fc-vector.gif",
+	"West Bromwich Albion FC": "https://logoeps.com/wp-content/uploads/2012/10/west-brom-logo-vector.png",
+}
+
 //JSONRequest struct
 type JSONRequest struct {
 	Object string      `json:"object"`
@@ -16,12 +40,6 @@ type JSONResponse struct {
 type ResponseMessage struct {
 	Text       string      `json:"text"`
 	Attachment *Attachment `json:"attachment"`
-}
-
-// ResponseMessageWithAttachment - function
-type ResponseMessageWithAttachment struct {
-	Text       string     `json:"text"`
-	Attachment Attachment `json:"attachment"`
 }
 
 //EntryItem Struct
@@ -85,15 +103,30 @@ type Button struct {
 	Payload string `json:"payload"`
 }
 
-//Payload Struct
-type Payload struct {
+//ButtonPayload Struct
+type ButtonPayload struct {
 	TemplateType string   `json:"template_type"`
 	Text         string   `json:"text"`
 	Buttons      []Button `json:"buttons"`
 }
 
+//ListPayload struct
+type ListPayload struct {
+	TemplateType    string    `json:"template_type"`
+	TopElementStyle string    `json:"top_element_style"`
+	Elements        []Element `json:"elements"`
+}
+
 //Attachment struct this constructs the attachment thats added to a message
 type Attachment struct {
-	Type    string  `json:"type"`
-	Payload Payload `json:"payload"`
+	Type    string      `json:"type"`
+	Payload interface{} `json:"payload"`
+}
+
+//Element struct
+type Element struct {
+	Title    string   `json:"title"`
+	SubTitle string   `json:"subtitle"`
+	ImageURL string   `json:"image_url"`
+	Buttons  []Button `json:"buttons"`
 }
