@@ -3,7 +3,6 @@ package com.lord.rahl.landon.web.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lord.rahl.landon.web.dataobjects.*;
 
-import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class MessageRecievedService {
         responseButtons.add(highlightButton);
         responseButtons.add(tableButton);
 
-        Payload responsePayload=new Payload();
+        ButtonPayload responsePayload=new ButtonPayload();
         responsePayload.setText("Hi, What do you want to do?");
         responsePayload.setTemplate_type("button");
         responsePayload.setButtons(responseButtons);

@@ -1,8 +1,11 @@
 package com.lord.rahl.landon.web.dataobjects;
 
+import com.lord.rahl.landon.web.idataobjects.Payload;
+
 public class Attachment {
     private String type;
     private Payload payload;
+//    private ButtonPayload payload;
 
     public String getType() {
         return type;

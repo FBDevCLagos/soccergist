@@ -56,6 +56,7 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 		// result = "Processing Message Recieved"
 		fmt.Println("Processing Message recieved")
 		result = services.HandleMessageRecieved(message, sender)
+
 	} else if readMessage.Watermark != 0 {
 		result = "Processing Read Message"
 		fmt.Println(result)
@@ -70,8 +71,9 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 		result = services.HandlePostBackRecieved(postBack, sender)
 	}
 
-	// fmt.Println(result)
+	fmt.Println(result)
 	response := utility.SendPostRequest(result)
+	// response := result
 
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, response)
