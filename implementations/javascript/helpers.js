@@ -1,9 +1,9 @@
-import axios from "axios";
+const axios = require("axios");
 const request = require("request");
 
 let feedback, standings;
 //handle team list
-export const handleTeamList = teams => {
+const handleTeamList = teams => {
   let teamList = [],
     table;
   teams.forEach(team => {
@@ -28,9 +28,9 @@ export const handleTeamList = teams => {
   return teamList;
 };
 
-export const getTable = body => {
+const getTable = (body, sendMessage) => {
   const standings = body.standing.slice(0, 4);
-  console.log("I got here first", standings);
+  // console.log("I got here first", standings);
   const table = {
     attachment: {
       type: "template",
@@ -41,11 +41,10 @@ export const getTable = body => {
       }
     }
   };
-  console.log(table)
-  return table
+  return sendMessage(table)
 };
 // handle message type
-export const handleFeedback = (message, done) => {
+const handleFeedback = (message, parseMessage, sendMessage) => {
   if ("message" in message) {
     return {
       attachment: {
@@ -75,7 +74,7 @@ export const handleFeedback = (message, done) => {
     };
   } else if ("postback" in message) {
     if (message.postback.payload === "league table") {
-      console.log("payload =>>>", message.postback.payload);
+      // console.log("payload =>>>", message.postback.payload);
       request(
         "http://api.football-data.org/v1/competitions/445/leagueTable",
         function(error, response, body) {
@@ -83,8 +82,8 @@ export const handleFeedback = (message, done) => {
             console.log("error:", error); // Print the error if one occurred
             return (error);
           } else {
-            console.log("statusCode:", response && response.statusCode); // Print the response status code if a response was received
-            done(JSON.parse(body));
+            // console.log("statusCode:", response && response.statusCode); // Print the response status code if a response was received
+            parseMessage(JSON.parse(body), sendMessage);
           }
         }
       );
@@ -96,7 +95,7 @@ export const handleFeedback = (message, done) => {
   }
 };
 
-export const sendTextMessage = (recipientId, messageFeedback) => {
+const sendTextMessage = (recipientId, messageFeedback) => {
   console.log(messageFeedback);
   // we package the bot response in FB required format
   const messageData = {
@@ -128,3 +127,10 @@ export const sendTextMessage = (recipientId, messageFeedback) => {
     }
   );
 };
+
+module.exports = {
+  handleTeamList,
+  getTable,
+  handleFeedback,
+  sendTextMessage
+}

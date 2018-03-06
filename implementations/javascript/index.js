@@ -30,8 +30,8 @@ app.post('/webhook', (req, res) => {
     // message object
     const message = req.body.entry[0].messaging[0];
     // So here we've got the request i.e req
-
-    sendTextMessage(senderId, handleFeedback(message, getTable)) // Here we prepare and send off the response we want our bot to give the sender
+    const resp = handleFeedback(message, getTable, (payload) => sendTextMessage(senderId, payload))
+     // Here we prepare and send off the response we want our bot to give the sender
     res.sendStatus(200) // Then we tell Facebook all went well        
 })
 
