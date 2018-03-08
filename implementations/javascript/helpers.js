@@ -2,17 +2,32 @@ const axios = require("axios");
 const request = require("request");
 
 let feedback, standings;
+
+// handle team crest
+const handleTeamCrest = (teamName, teamList) => {
+  if(teamName in teamList) {
+    return teamList[teamName]
+  } else {
+    console.error('an error occoured');
+  }
+}
 //handle team list
 const handleTeamList = teams => {
   let teamList = [],
-    table;
+  table;
+  let teamUrl = {
+    'Manchester City FC': 'http://res.cloudinary.com/mc-cloud/image/upload/v1520512537/manchester-city-logo-vector_viievq.png',
+    'Manchester United FC': 'http://res.cloudinary.com/mc-cloud/image/upload/v1520512028/manchester-united-logo-vector_l2nrfj.png',
+    'Liverpool FC': 'http://res.cloudinary.com/mc-cloud/image/upload/v1520512476/liverpool-logo-vector_z0hget.png',
+    'Tottenham Hotspur FC': 'http://res.cloudinary.com/mc-cloud/image/upload/v1520512878/tottenham-hotspur-fc-logo-vector_ogfnex.png'
+  }
   teams.forEach(team => {
     table = {
       title: `Position ${team.position}: ${team.teamName} `,
       subtitle: `Matches played: ${team.playedGames} \n Points: ${
         team.points
       } `,
-      image_url: team.crestURI,
+      image_url: handleTeamCrest(team.teamName, teamUrl),
       buttons: [
         {
           title: "more details",
@@ -30,7 +45,6 @@ const handleTeamList = teams => {
 
 const getTable = (body, sendMessage) => {
   const standings = body.standing.slice(0, 4);
-  // console.log("I got here first", standings);
   const table = {
     attachment: {
       type: "template",
@@ -46,7 +60,7 @@ const getTable = (body, sendMessage) => {
 // handle message type
 const handleFeedback = (message, parseMessage, sendMessage) => {
   if ("message" in message) {
-    return {
+    const postback = {
       attachment: {
         type: "template",
         payload: {
@@ -72,31 +86,30 @@ const handleFeedback = (message, parseMessage, sendMessage) => {
         }
       }
     };
+    return sendMessage(postback)
   } else if ("postback" in message) {
     if (message.postback.payload === "league table") {
-      // console.log("payload =>>>", message.postback.payload);
       request(
         "http://api.football-data.org/v1/competitions/445/leagueTable",
         function(error, response, body) {
           if (error) {
-            console.log("error:", error); // Print the error if one occurred
+            console.error("error:", error); // Print the error if one occurred
             return (error);
           } else {
-            // console.log("statusCode:", response && response.statusCode); // Print the response status code if a response was received
             parseMessage(JSON.parse(body), sendMessage);
           }
         }
       );
     } else {
-      return {
+      const responseFeedback =  {
         text: `${message.postback.payload} coming soon`
       };
+      return sendMessage(responseFeedback);
     }
   }
 };
 
 const sendTextMessage = (recipientId, messageFeedback) => {
-  console.log(messageFeedback);
   // we package the bot response in FB required format
   const messageData = {
     recipient: {
