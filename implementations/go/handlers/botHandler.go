@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"soccergist/implementations/go/dataobject"
 	"soccergist/implementations/go/utility"
+	"time"
 
 	"soccergist/implementations/go/services"
 )
@@ -13,10 +14,16 @@ import (
 //WebHookHandler - function to handler webhooks
 func WebHookHandler(w http.ResponseWriter, r *http.Request) {
 	queryString := r.URL.Query()
+	fmt.Println(queryString)
 
 	hubMode := queryString.Get("hub.mode")
 	hubChallenge := queryString.Get("hub.challenge")
 	hubVerifyToken := queryString.Get("hub.verify_token")
+
+	if hubVerifyToken == "" {
+		fmt.Fprint(w, "Please provide a valid hub verification token")
+		return
+	}
 
 	fmt.Println(hubVerifyToken)
 
@@ -71,10 +78,10 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 		result = services.HandlePostBackRecieved(postBack, sender)
 	}
 
-	fmt.Println(result)
 	response := utility.SendPostRequest(result)
 	// response := result
 
+	fmt.Println("Response Delivered at " + time.Now().String())
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, response)
 
