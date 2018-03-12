@@ -20,9 +20,12 @@ type webhookPayload struct {
 }
 
 type messageEvent struct {
-	Mid  string
-	Seq  int
-	Text string
+	Mid        string
+	Seq        int
+	Text       string
+	QuickReply struct {
+		Payload string `json:"payload,omitempty"`
+	} `json:"quick_reply,omitempty"`
 }
 
 type postbackEvent struct {
@@ -30,13 +33,11 @@ type postbackEvent struct {
 	Payload string `json:"payload,omitempty"`
 }
 
-type textResponse struct {
-	Recipient struct {
-		ID string `json:"id,omitempty"`
-	} `json:"recipient,omitempty"`
-	Message struct {
-		Text string `json:"text,omitempty"`
-	} `json:"message,omitempty"`
+type quickReply struct {
+	ContentType string `json:"content_type,omitempty"`
+	ImageURL    string `json:"image_url,omitempty"`
+	Payload     string `json:"payload,omitempty"`
+	Title       string `json:"title,omitempty"`
 }
 
 type templateResponse struct {
@@ -44,6 +45,7 @@ type templateResponse struct {
 		ID string `json:"id,omitempty"`
 	} `json:"recipient,omitempty"`
 	Message struct {
+		Text       string `json:"text,omitempty"`
 		Attachment struct {
 			Type    string `json:"type,omitempty"`
 			Payload struct {
@@ -54,6 +56,16 @@ type templateResponse struct {
 				Elements        []element `json:"elements,omitempty"`
 			} `json:"payload,omitempty"`
 		} `json:"attachment,omitempty"`
+	} `json:"message,omitempty"`
+}
+
+type basicResponseTemplate struct {
+	Recipient struct {
+		ID string `json:"id,omitempty"`
+	} `json:"recipient,omitempty"`
+	Message struct {
+		Text         string       `json:"text,omitempty"`
+		QuickReplies []quickReply `json:"quick_replies,omitempty"`
 	} `json:"message,omitempty"`
 }
 

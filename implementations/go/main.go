@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"reflect"
+	"strings"
 
 	"github.com/FBDevCLagos/soccergist/implementations/go/utils"
 
@@ -62,23 +64,32 @@ func handleWebhookEvents(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 }
 
-var postbackHandlers = map[string]func(postbackEvent, string){
-	"league-table-postback": handleLeagueTablePostbackEvent,
+var postbackHandlers = map[string]func(string, string){
+	"league-table-postback":    handleLeagueTablePostbackEvent,
+	"match-schedules-postback": handleMatchSchedulesPostbackEvent,
 }
 
 func handlePostbackEvent(msgEvnt postbackEvent, senderID string) {
 	postbackHandler, ok := postbackHandlers[msgEvnt.Payload]
 	if !ok {
-		reply := textResponse{}
+		reply := templateResponse{}
 		reply.Recipient.ID = senderID
 		reply.Message.Text = fmt.Sprintf("%s - coming soon 🤠", msgEvnt.Title)
 		sendResponse(reply)
 	} else {
-		postbackHandler(msgEvnt, senderID)
+		postbackHandler(msgEvnt.Payload, senderID)
 	}
 }
 
 func handleMessageEvent(msgEvnt messageEvent, senderID string) {
+	if msgEvnt.QuickReply.Payload != "" {
+		handleQuickReplyEvent(msgEvnt, senderID)
+		return
+	}
+	handleTextMessageEvent(msgEvnt, senderID)
+}
+
+func handleTextMessageEvent(msgEvnt messageEvent, senderID string) {
 	reply := templateResponse{}
 	reply.Recipient.ID = senderID
 	reply.Message.Attachment.Type = "template"

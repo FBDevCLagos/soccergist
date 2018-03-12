@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
+	"time"
 
 	"github.com/FBDevCLagos/soccergist/implementations/go/data"
 )
 
-func handleLeagueTablePostbackEvent(msgEvnt postbackEvent, senderID string) {
+func handleLeagueTablePostbackEvent(msgEvnt, senderID string) {
 	league := data.PremierLeagueInfo()
 	leagueTable := league.Table()
 	firstFour := data.FirstFour(leagueTable)
@@ -34,5 +37,87 @@ func handleLeagueTablePostbackEvent(msgEvnt postbackEvent, senderID string) {
 	reply.Message.Attachment.Payload.Elements = elements
 	reply.Message.Attachment.Payload.Buttons = []button{viewMoreBtn}
 
+	sendResponse(reply)
+}
+
+func handleMatchSchedulesPostbackEvent(payload, senderID string) {
+	premierLeague := data.PremierLeagueInfo()
+	rr := regexp.MustCompile("(\\d+)")
+	matchday := premierLeague.PresentMatchday()
+	if mday := rr.FindStringSubmatch(payload); len(mday) > 0 {
+		matchday, _ = strconv.Atoi(mday[0])
+	}
+
+	fixtures := premierLeague.GetMatchdayFixtures(matchday)
+	msg := fmt.Sprintf("Fixtures for Matchday: %d", matchday)
+
+	if fixtures == nil {
+		return
+	}
+
+	for _, fixture := range fixtures.Fixtures {
+		if fixture.Status == "FINISHED" {
+			msg = fmt.Sprintf("%s\n-----\n%s VS %s => (%d : %d)", msg, fixture.HomeTeamName, fixture.AwayTeamName, fixture.Result.GoalsHomeTeam, fixture.Result.GoalsAwayTeam)
+		} else if t, err := time.Parse(time.RFC3339, fixture.Date); err == nil {
+			msg = fmt.Sprintf("%s\n-----\n%s VS %s - %s", msg, fixture.HomeTeamName, fixture.AwayTeamName, t.Format("Mon, Jan 2, 3:04PM"))
+		} else {
+			msg = fmt.Sprintf("%s\n-----\n%s VS %s - %s", msg, fixture.HomeTeamName, fixture.AwayTeamName, fixture.Status)
+		}
+	}
+	reply := buildTextMsg(senderID, msg)
+
+	sendResponse(reply)
+	sendMatchFixuresPagination(senderID, matchday, premierLeague.PresentMatchday(), premierLeague.TotalMatchdays())
+}
+
+func sendMatchFixuresPagination(senderID string, matchday, currentMatchday, totalMatchdays int) {
+	contents := []quickReply{}
+
+	if day := matchday - 2; day > 0 {
+		content := quickReply{
+			ContentType: "text",
+			Payload:     fmt.Sprintf("match-schedules-postback-%d", day),
+			Title:       fmt.Sprintf("<< matchday %d", day),
+		}
+		contents = append(contents, content)
+	}
+
+	if day := matchday - 1; day > 0 {
+		content := quickReply{
+			ContentType: "text",
+			Payload:     fmt.Sprintf("match-schedules-postback-%d", day),
+			Title:       fmt.Sprintf("< matchday %d", day),
+		}
+		contents = append(contents, content)
+	}
+
+	if matchday != currentMatchday {
+		content := quickReply{
+			ContentType: "text",
+			Payload:     fmt.Sprintf("match-schedules-postback-%d", currentMatchday),
+			Title:       "current matchday",
+		}
+		contents = append(contents, content)
+	}
+
+	if day := matchday + 1; day <= totalMatchdays {
+		content := quickReply{
+			ContentType: "text",
+			Payload:     fmt.Sprintf("match-schedules-postback-%d", day),
+			Title:       fmt.Sprintf("matchday %d >", day),
+		}
+		contents = append(contents, content)
+	}
+
+	if day := matchday + 2; day <= totalMatchdays {
+		content := quickReply{
+			ContentType: "text",
+			Payload:     fmt.Sprintf("match-schedules-postback-%d", day),
+			Title:       fmt.Sprintf("matchday %d >>", day),
+		}
+		contents = append(contents, content)
+	}
+
+	reply := buildQuickReply("navigation", senderID, contents)
 	sendResponse(reply)
 }

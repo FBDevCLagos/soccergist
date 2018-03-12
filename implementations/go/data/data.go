@@ -6,6 +6,9 @@ import (
 
 type League interface {
 	Table() *football_data.LeagueTable
+	PresentMatchday() int
+	TotalMatchdays() int
+	GetMatchdayFixtures(int) *football_data.MatchDayFixtures
 }
 
 type LeagueTableTeamInfo struct {
