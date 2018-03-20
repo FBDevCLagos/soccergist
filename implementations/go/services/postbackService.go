@@ -121,6 +121,32 @@ func loadMatchSchedule(leagueID int, matchDay int) (response string) {
 }
 
 //Loads the first four teams on the table.
+		ID: sender.ID,
+	}
+
+	fmt.Println(payload)
+
+	if payload == "league-table-postback" {
+		leagueID := 445
+		return loadLeagueTable(leagueID, sender)
+
+	} else {
+		message = dataobject.ResponseMessage{
+			Text: title + " coming soon",
+		}
+
+	}
+
+	jsonResponse := dataobject.JSONResponse{
+		Recipient: recipient,
+		Message:   message,
+	}
+	b, err := json.Marshal(jsonResponse)
+	utility.FailOnError(err, "Cannot Marshall response to json")
+	response = string(b)
+	return
+}
+
 func loadLeagueTable(leagueID int, sender dataobject.Sender) (response string) {
 	url := "http://api.football-data.org/v1/competitions/" + strconv.Itoa(leagueID) + "/leagueTable"
 	dataResponse := utility.SendGetRequest(url)
@@ -181,6 +207,7 @@ func loadLeagueTable(leagueID int, sender dataobject.Sender) (response string) {
 
 	message := dataobject.ResponseMessage{
 		Attachment: &attachment,
+
 	}
 
 	recipient := dataobject.Recipient{
