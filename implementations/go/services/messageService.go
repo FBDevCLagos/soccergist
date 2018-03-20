@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"soccergist/implementations/go/dataobject"
 	"soccergist/implementations/go/utility"
+	"strconv"
 )
 
 //HandleMessageRecieved -function to handle message recieved
@@ -12,7 +13,10 @@ func HandleMessageRecieved(message dataobject.Message, sender dataobject.Sender)
 	//the response is dependent on the type of message we recieve
 	//but for now, we assume that all message means greeting
 	//and we bombard our users with the options available.
-	response = ShowDefaultMenu(sender)
+
+	// response = ShowDefaultMenu(sender)
+
+	response = ShowQuickReplies(sender, message.QuickReply)
 	return
 }
 
@@ -66,4 +70,65 @@ func ShowDefaultMenu(sender dataobject.Sender) (response string) {
 	utility.FailOnError(err, "Cannot Marshall This response accordingly...")
 	response = string(b)
 	return response
+}
+
+//ShowQuickReplies - function to demonstrate quick reply Demo
+func ShowQuickReplies(sender dataobject.Sender, quickReplyPayload dataobject.MessageQuickReply) (response string) {
+	var quickReplies []dataobject.QuickReply
+	start := 1
+	end := 5
+	limit := 20
+	var payloadValue int
+	if quickReplyPayload.Payload != "" {
+		payloadValue, _ = strconv.Atoi(quickReplyPayload.Payload)
+	} else {
+		payloadValue = 1
+	}
+
+	newStartPoint := payloadValue - 2
+	if newStartPoint > 0 {
+		start = newStartPoint
+	}
+
+	newEndPoint := payloadValue + 2
+	if newEndPoint > limit {
+		end = limit
+		start = limit - 4
+	} else {
+		if newEndPoint > end {
+			end = newEndPoint
+		}
+	}
+
+	for i := start; i <= end; i++ {
+		if i == payloadValue {
+			continue
+		}
+		strContent := strconv.Itoa(i)
+		quickReplies = append(quickReplies, dataobject.QuickReply{
+			ContentType: "text",
+			Title:       strContent,
+			Payload:     strContent,
+		})
+	}
+
+	quickReplyMessage := dataobject.QuickResponseMessage{
+		Text:         "Naviagation Options",
+		QuickReplies: quickReplies,
+	}
+
+	recipient := dataobject.Recipient{
+		ID: sender.ID,
+	}
+
+	jsonOutputMessage := dataobject.JSONResponse{
+		Recipient: recipient,
+		Message:   quickReplyMessage,
+	}
+
+	b, err := json.Marshal(jsonOutputMessage)
+	utility.FailOnError(err, "Cannot Marshal This message to json")
+
+	response = string(b)
+	return
 }

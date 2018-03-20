@@ -23,12 +23,10 @@ func HandlePostBackRecieved(postback dataobject.PostBack, sender dataobject.Send
 	if payload == "league-table-postback" {
 		leagueID := 445
 		return loadLeagueTable(leagueID, sender)
+	}
 
-	} else {
-		message = dataobject.ResponseMessage{
-			Text: title + " coming soon",
-		}
-
+	message = dataobject.ResponseMessage{
+		Text: title + " coming soon",
 	}
 
 	jsonResponse := dataobject.JSONResponse{
