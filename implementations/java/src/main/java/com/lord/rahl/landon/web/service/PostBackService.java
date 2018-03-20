@@ -34,7 +34,7 @@ public class PostBackService {
     }
 
 
-    public String buildResponse(){
+    private String buildResponse(){
         String response="";
         Recipient recipient=new Recipient(sender.getId());
 
