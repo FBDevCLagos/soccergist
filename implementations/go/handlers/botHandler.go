@@ -76,10 +76,10 @@ func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if postBack.Payload != "" {
 		result = services.HandlePostBackRecieved(postBack, sender)
+		// fmt.Println(result)
+		// return
 	}
 
-	// fmt.Println(result)
-	// return
 	response := utility.SendPostRequest(result)
 	// response := result
 

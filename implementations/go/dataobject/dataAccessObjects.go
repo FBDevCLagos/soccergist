@@ -150,3 +150,31 @@ type Element struct {
 	ImageURL string   `json:"image_url"`
 	Buttons  []Button `json:"buttons"`
 }
+
+//Fixtures Array of Fixtures
+type Fixtures struct {
+	Fixture []Fixture `json:"fixtures"`
+}
+
+//Fixture Struct
+type Fixture struct {
+	Date     string `json:"date"`
+	Status   string `json:"status"`
+	MatchDay int    `json:"matchday"`
+	HomeTeam string `json:"homeTeamName"`
+	AwayTeam string `json:"awayTeamName"`
+	Result   Result `json:"result"`
+}
+
+//Result Struct
+type Result struct {
+	GoalsHomeTeam int      `json:"goalsHomeTeam"`
+	GoalsAwayTeam int      `json:"goalsAwayTeam"`
+	HalfTime      HalfTime `json:"halfTime"`
+}
+
+//HalfTime struct
+type HalfTime struct {
+	GoalsHomeTeam int `json:"goalsHomeTeam"`
+	GoalsAwayTeam int `json:"goalsAwayTeam"`
+}

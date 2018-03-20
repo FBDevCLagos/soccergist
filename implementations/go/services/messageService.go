@@ -10,13 +10,19 @@ import (
 //HandleMessageRecieved -function to handle message recieved
 func HandleMessageRecieved(message dataobject.Message, sender dataobject.Sender) (response string) {
 
-	//the response is dependent on the type of message we recieve
-	//but for now, we assume that all message means greeting
-	//and we bombard our users with the options available.
+	/**
+	**/
 
-	// response = ShowDefaultMenu(sender)
+	if message.QuickReply.Payload != "" {
+		leagueID := 445
+		matchDay, err := strconv.Atoi(message.QuickReply.Payload)
+		utility.FailOnError(err, "Invalid Matchday Number provided")
+		response = LoadMatchScheduleReply(sender, leagueID, matchDay)
+	} else {
+		response = ShowDefaultMenu(sender)
+	}
 
-	response = ShowQuickReplies(sender, message.QuickReply)
+	// response = ShowQuickReplies(sender, message.QuickReply)
 	return
 }
 
