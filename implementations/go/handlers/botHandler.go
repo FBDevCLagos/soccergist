@@ -1,70 +1,29 @@
 package handlers
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"soccergist/implementations/go/dataobject"
 	"soccergist/implementations/go/utility"
+	"time"
+
+	"soccergist/implementations/go/services"
 )
-
-//JSONRequest struct
-type JSONRequest struct {
-	Object string      `json:"object"`
-	Entry  []EntryItem `json:"entry"`
-}
-
-//JSONResponse - struct
-type JSONResponse struct {
-	Recipient Recipient       `json:"recipient"`
-	Message   ResponseMessage `json:"message"`
-}
-
-//ResponseMessage struct
-type ResponseMessage struct {
-	Text string `json:"text"`
-}
-
-//EntryItem Struct
-type EntryItem struct {
-	ID        string          `json:"id"`
-	Time      int64           `json:"time"`
-	Messaging []MessagingItem `json:"messaging"`
-}
-
-//MessagingItem struct for handling the messaging values
-type MessagingItem struct {
-	Sender    Sender    `json:"sender"`
-	Recipient Recipient `json:"recipient"`
-	Timestamp int64     `json:"timestamp"`
-	Message   Message   `json:"message"`
-}
-
-//Message struct handles the message that is being sent across.
-type Message struct {
-	MID  string `json:"mid"`  //message ID
-	Seq  int    `json:"seq"`  //sequence
-	Text string `json:"text"` //content of the message
-}
-
-//Sender struct - To Manage the sender
-type Sender struct {
-	ID string `json:"id"`
-}
-
-//Recipient struct to manage the recipient
-type Recipient struct {
-	ID string `json:"id"`
-}
 
 //WebHookHandler - function to handler webhooks
 func WebHookHandler(w http.ResponseWriter, r *http.Request) {
 	queryString := r.URL.Query()
+	fmt.Println(queryString)
 
 	hubMode := queryString.Get("hub.mode")
 	hubChallenge := queryString.Get("hub.challenge")
 	hubVerifyToken := queryString.Get("hub.verify_token")
+
+	if hubVerifyToken == "" {
+		fmt.Fprint(w, "Please provide a valid hub verification token")
+		return
+	}
 
 	fmt.Println(hubVerifyToken)
 
@@ -85,60 +44,91 @@ func WebHookHandler(w http.ResponseWriter, r *http.Request) {
 
 //WebHookPostHandler - function to handle webhook post requests
 func WebHookPostHandler(w http.ResponseWriter, r *http.Request) {
-	var jsonRequest JSONRequest
+	var jsonRequest dataobject.JSONRequest
 	err := json.NewDecoder(r.Body).Decode(&jsonRequest)
 	utility.FailOnError(err, "Cannot decode this request data successfully!!")
 
 	entryItem := jsonRequest.Entry[0]
 	messaging := entryItem.Messaging[0]
 
-	senderID := messaging.Sender.ID
-	message := messaging.Message.Text
+	sender := messaging.Sender
+	message := messaging.Message
+	readMessage := messaging.Read
+	postBack := messaging.PostBack
+	delivery := messaging.Delivery
 
-	if senderID == "" {
-		fmt.Fprint(w, utility.ReturnErrorMessage("Sender ID not found", "Sender Not Found"))
+	var result string
+
+	if message.Text != "" {
+		// result = "Processing Message Recieved"
+		fmt.Println("Processing Message recieved")
+		result = services.HandleMessageRecieved(message, sender)
+
+	} else if readMessage.Watermark != 0 {
+		result = "Processing Read Message"
+		fmt.Println(result)
+		fmt.Fprint(w, result)
 		return
-	}
-
-	if message == "" {
-		fmt.Fprint(w, utility.ReturnErrorMessage("Message is Empty", "No Message Found"))
+	} else if delivery.Watermark != 0 {
+		result = "Processing Delivered Message"
+		fmt.Println(result)
+		fmt.Fprint(w, result)
 		return
+	} else if postBack.Payload != "" {
+		result = services.HandlePostBackRecieved(postBack, sender)
+		// fmt.Println(result)
+		// return
 	}
 
-	responseMessage := ResponseMessage{
-		Text: "I recieved your message (" + message + ") and i have sent it to my Oga at the top: LordRahl",
-	}
 
-	recipient := Recipient{
-		ID: senderID,
-	}
+	response := utility.SendPostRequest(result)
+	// response := result
 
-	jsonResponse := JSONResponse{
-		Recipient: recipient,
-		Message:   responseMessage,
-	}
-
-	b, err := json.Marshal(jsonResponse)
-	utility.FailOnError(err, "Cannot Convert this to JSON")
-	responseString := string(b)
-
-	//sending the post request
-	accessToken := utility.GetSecretKey()
-	endPoint := "https://graph.facebook.com/v2.6/me/messages?access_token=" + accessToken
-	request, err := http.NewRequest("POST", endPoint, bytes.NewBuffer([]byte(responseString))) //creates a request
-	request.Header.Set("Content-Type", "application/json")
-	utility.FailOnError(err, "Cannot Complete this request")
-
-	fmt.Println("Going to Facebok")
-
-	client := utility.GetHTTPClient()
-	response, err := client.Do(request) //sends the request to the desired endpoint and keeps the response
-	utility.FailOnError(err, "Cannot Process this request")
-	defer response.Body.Close()
-
-	body, _ := ioutil.ReadAll(response.Body) //gets the body of the response
-	fmt.Println(string(body))
-
+	fmt.Println("Response Delivered at " + time.Now().String())
 	w.Header().Add("Content-Type", "application/json")
-	fmt.Fprint(w, responseString) //prints the good news to the user
+	fmt.Fprint(w, response)
+
+	// fmt.Println(jsonRequest)
+
+	// if senderID == "" {
+	// 	fmt.Fprint(w, utility.ReturnErrorMessage("Sender ID not found", "Sender Not Found"))
+	// 	return
+	// }
+
+	// responseMessage := ResponseMessage{
+	// 	Text: "I recieved your message (" + message + ") and i have sent it to my Oga at the top: LordRahl",
+	// }
+
+	// recipient := Recipient{
+	// 	ID: senderID,
+	// }
+
+	// jsonResponse := JSONResponse{
+	// 	Recipient: recipient,
+	// 	Message:   responseMessage,
+	// }
+
+	// b, err := json.Marshal(jsonResponse)
+	// utility.FailOnError(err, "Cannot Convert this to JSON")
+	// responseString := string(b)
+
+	// //sending the post request
+	// accessToken := utility.GetSecretKey()
+	// endPoint := "https://graph.facebook.com/v2.6/me/messages?access_token=" + accessToken
+	// request, err := http.NewRequest("POST", endPoint, bytes.NewBuffer([]byte(responseString))) //creates a request
+	// request.Header.Set("Content-Type", "application/json")
+	// utility.FailOnError(err, "Cannot Complete this request")
+
+	// fmt.Println("Going to Facebok")
+
+	// client := utility.GetHTTPClient()
+	// response, err := client.Do(request) //sends the request to the desired endpoint and keeps the response
+	// utility.FailOnError(err, "Cannot Process this request")
+	// defer response.Body.Close()
+
+	// body, _ := ioutil.ReadAll(response.Body) //gets the body of the response
+	// fmt.Println(string(body))
+
+	// w.Header().Add("Content-Type", "application/json")
+	// fmt.Fprint(w, responseString) //prints the good news to the user
 }

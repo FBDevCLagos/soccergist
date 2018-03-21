@@ -1,7 +1,9 @@
 package utility
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -77,7 +79,7 @@ func GetHTTPClient() *http.Client {
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Println(msg)
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
@@ -93,6 +95,39 @@ func GetSecretKey() string {
 
 	token := env.Token
 	return token
+}
+
+//SendPostRequest - function to send generic POST request
+func SendPostRequest(requestBody string) (response string) {
+	accessToken := GetSecretKey()
+	endPoint := "https://graph.facebook.com/v2.6/me/messages?access_token=" + accessToken
+	request, err := http.NewRequest("POST", endPoint, bytes.NewBuffer([]byte(requestBody))) //creates a request
+	request.Header.Set("Content-Type", "application/json")
+	FailOnError(err, "Cannot Complete this request")
+
+	client := GetHTTPClient()
+	extResponse, err := client.Do(request) //sends the request to the desired endpoint and keeps the response
+	FailOnError(err, "Cannot Process this request")
+	defer extResponse.Body.Close()
+
+	body, _ := ioutil.ReadAll(extResponse.Body) //gets the body of the response
+	response = string(body)
+	fmt.Println(string(response))
+	return response
+}
+
+//SendGetRequest - function to send get request to external service
+func SendGetRequest(url string) (response string) {
+	client := GetHTTPClient()
+	extResponse, err := client.Get(url)
+	FailOnError(err, "An error occurred while processing the request.")
+
+	defer extResponse.Body.Close()
+	contents, err := ioutil.ReadAll(extResponse.Body)
+	FailOnError(err, "Cannot Read the content of the response")
+
+	response = string(contents)
+	return
 }
 
 //Env - The Environment Variable struct

@@ -20,7 +20,16 @@ public class ExternalService {
      * @return
      */
     public String sendGetRequest(String url){
-        return "Sending GET request";
+        String externalResponse="";
+        RestTemplate template=new RestTemplate();
+        try{
+            externalResponse=template.getForObject(url,String.class);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return externalResponse;
     }
 
 
@@ -45,6 +54,7 @@ public class ExternalService {
             HttpEntity<String> httpEntity=new HttpEntity<String>(body,headers);
             RestTemplate template=new RestTemplate();
 
+            System.out.println(httpEntity.getBody());
             externalResponse=template.postForObject(externalUrl,httpEntity,String.class);
         }
         catch (Exception ex){
@@ -78,5 +88,19 @@ public class ExternalService {
         }
 
         return token;
+    }
+
+
+    public String getLeagueStanding(int leagueID){
+        String url="http://api.football-data.org/v1/competitions/"+leagueID+"/leagueTable";
+        String response=sendGetRequest(url);
+        return response;
+    }
+
+    public String getLeagueFixture(int leagueID, int matchDay){
+        String url="http://api.football-data.org/v1/competitions/"+leagueID+"/fixtures?matchday="+matchDay;
+        String response=sendGetRequest(url);
+
+        return response;
     }
 }

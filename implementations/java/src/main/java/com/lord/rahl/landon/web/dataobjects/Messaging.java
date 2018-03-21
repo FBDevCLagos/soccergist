@@ -1,7 +1,8 @@
 package com.lord.rahl.landon.web.dataobjects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.lord.rahl.landon.web.dataobjects.messages.Message;
+import com.lord.rahl.landon.web.dataobjects.messages.Read;
+import com.lord.rahl.landon.web.dataobjects.messages.Recipient;
 
 public class Messaging {
 
