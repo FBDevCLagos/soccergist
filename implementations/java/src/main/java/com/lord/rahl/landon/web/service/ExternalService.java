@@ -94,7 +94,13 @@ public class ExternalService {
     public String getLeagueStanding(int leagueID){
         String url="http://api.football-data.org/v1/competitions/"+leagueID+"/leagueTable";
         String response=sendGetRequest(url);
-//        System.out.println(response);
+        return response;
+    }
+
+    public String getLeagueFixture(int leagueID, int matchDay){
+        String url="http://api.football-data.org/v1/competitions/"+leagueID+"/fixtures?matchday="+matchDay;
+        String response=sendGetRequest(url);
+
         return response;
     }
 }

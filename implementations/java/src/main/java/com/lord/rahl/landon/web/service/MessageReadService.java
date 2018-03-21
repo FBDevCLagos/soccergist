@@ -1,6 +1,6 @@
 package com.lord.rahl.landon.web.service;
 
-import com.lord.rahl.landon.web.dataobjects.Read;
+import com.lord.rahl.landon.web.dataobjects.messages.Read;
 import com.lord.rahl.landon.web.dataobjects.Sender;
 
 public class MessageReadService {

@@ -2,6 +2,8 @@ package com.lord.rahl.landon.web.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lord.rahl.landon.web.dataobjects.*;
+import com.lord.rahl.landon.web.dataobjects.messages.Message;
+import com.lord.rahl.landon.web.dataobjects.messages.Read;
 
 import java.util.List;
 
@@ -41,8 +43,6 @@ public class MessageDecoder {
             else{
                 result="Unhandled Callback";
             }
-
-
         }
         catch (Exception ex){
             ex.printStackTrace();
