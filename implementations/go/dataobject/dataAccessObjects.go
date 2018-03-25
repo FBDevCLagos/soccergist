@@ -32,14 +32,28 @@ type JSONRequest struct {
 
 //JSONResponse - struct
 type JSONResponse struct {
-	Recipient Recipient       `json:"recipient"`
-	Message   ResponseMessage `json:"message"`
+	Recipient Recipient `json:"recipient"`
+	// Message   ResponseMessage `json:"message"`
+	Message interface{} `json:"message"`
 }
 
 //ResponseMessage struct
 type ResponseMessage struct {
 	Text       string      `json:"text"`
 	Attachment *Attachment `json:"attachment"`
+}
+
+//QuickResponseMessage Struct
+type QuickResponseMessage struct {
+	Text         string       `json:"text"`
+	QuickReplies []QuickReply `json:"quick_replies"`
+}
+
+//QuickReply Template
+type QuickReply struct {
+	ContentType string `json:"content_type"`
+	Title       string `json:"title"`
+	Payload     string `json:"payload"`
 }
 
 //EntryItem Struct
@@ -62,9 +76,15 @@ type MessagingItem struct {
 
 //Message struct handles the message that is being sent across.
 type Message struct {
-	MID  string `json:"mid"`  //message ID
-	Seq  int    `json:"seq"`  //sequence
-	Text string `json:"text"` //content of the message
+	MID        string            `json:"mid"`  //message ID
+	Seq        int               `json:"seq"`  //sequence
+	Text       string            `json:"text"` //content of the message
+	QuickReply MessageQuickReply `json:"quick_reply"`
+}
+
+//MessageQuickReply - struct to save the quick reply returned.
+type MessageQuickReply struct {
+	Payload string `json:"payload"`
 }
 
 //PostBack struct
@@ -129,4 +149,32 @@ type Element struct {
 	SubTitle string   `json:"subtitle"`
 	ImageURL string   `json:"image_url"`
 	Buttons  []Button `json:"buttons"`
+}
+
+//Fixtures Array of Fixtures
+type Fixtures struct {
+	Fixture []Fixture `json:"fixtures"`
+}
+
+//Fixture Struct
+type Fixture struct {
+	Date     string `json:"date"`
+	Status   string `json:"status"`
+	MatchDay int    `json:"matchday"`
+	HomeTeam string `json:"homeTeamName"`
+	AwayTeam string `json:"awayTeamName"`
+	Result   Result `json:"result"`
+}
+
+//Result Struct
+type Result struct {
+	GoalsHomeTeam int      `json:"goalsHomeTeam"`
+	GoalsAwayTeam int      `json:"goalsAwayTeam"`
+	HalfTime      HalfTime `json:"halfTime"`
+}
+
+//HalfTime struct
+type HalfTime struct {
+	GoalsHomeTeam int `json:"goalsHomeTeam"`
+	GoalsAwayTeam int `json:"goalsAwayTeam"`
 }

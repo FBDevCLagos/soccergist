@@ -1,4 +1,4 @@
-package com.lord.rahl.landon.web.dataobjects;
+package com.lord.rahl.landon.web.dataobjects.messages;
 
 public class Recipient {
 
