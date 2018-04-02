@@ -121,3 +121,44 @@ func sendMatchFixuresPagination(senderID string, matchday, currentMatchday, tota
 	reply := buildQuickReply("navigation", senderID, contents)
 	sendResponse(reply)
 }
+
+func handleLeagueMoreHighlightsPostbackEvent(payload, senderID string) {
+	handleLeagueHighlights(payload, senderID)
+}
+
+func handleLeagueHighlightsPostbackEvent(payload, senderID string) {
+	handleLeagueHighlights("", senderID)
+}
+
+func handleLeagueHighlights(payload, senderID string) {
+	elements := []element{}
+	posts := data.Highlights(payload)
+
+	for _, post := range posts {
+		// TODO: handle more than one highlight url
+		btn := button{Type: "web_url", Title: "Watch highlight", URL: post.URLs[0]}
+		element := buildBasicElement(post.Title, "", "https://i.vimeocdn.com/portrait/6640852_640x640")
+		element.Buttons = []button{btn}
+		elements = append(elements, element)
+
+		if len(elements) == 9 {
+			break
+		}
+	}
+
+	if len(posts) > 9 {
+		viewMore := buildBasicElement("View More Highlights", "", "http://icons-for-free.com/free-icons/png/512/1814113.png")
+		btn := buildPostbackBtn("More Highlights", posts[9].Name)
+		viewMore.Buttons = []button{btn}
+
+		elements = append(elements, viewMore)
+	}
+
+	reply := templateResponse{}
+	reply.Recipient.ID = senderID
+	reply.Message.Attachment.Type = "template"
+	reply.Message.Attachment.Payload.TemplateType = "generic"
+	reply.Message.Attachment.Payload.Elements = elements
+
+	sendResponse(reply)
+}

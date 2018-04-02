@@ -73,6 +73,7 @@ type button struct {
 	Type    string `json:"type,omitempty"`
 	Title   string `json:"title,omitempty"`
 	Payload string `json:"payload,omitempty"`
+	URL     string `json:"url,omitempty"`
 }
 
 type element struct {
@@ -80,6 +81,8 @@ type element struct {
 	Title         string   `json:"title,omitempty"`
 	Subtitle      string   `json:"subtitle,omitempty"`
 	ImageURL      string   `json:"image_url,omitempty"`
+	MediaType     string   `json:"media_type,omitempty"`
+	AttachmentID  string   `json:"attachment_id,omitempty"`
 	DefaultAction *struct {
 		Type                string `json:"type,omitempty"`
 		URL                 string `json:"url,omitempty"`

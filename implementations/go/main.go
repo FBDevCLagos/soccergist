@@ -65,20 +65,27 @@ func handleWebhookEvents(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 }
 
 var postbackHandlers = map[string]func(string, string){
-	"league-table-postback":    handleLeagueTablePostbackEvent,
-	"match-schedules-postback": handleMatchSchedulesPostbackEvent,
+	"league-table-postback":      handleLeagueTablePostbackEvent,
+	"match-schedules-postback":   handleMatchSchedulesPostbackEvent,
+	"league-highlights-postback": handleLeagueHighlightsPostbackEvent,
+
+	"More Highlights": handleLeagueMoreHighlightsPostbackEvent,
 }
 
 func handlePostbackEvent(msgEvnt postbackEvent, senderID string) {
-	postbackHandler, ok := postbackHandlers[msgEvnt.Payload]
-	if !ok {
-		reply := templateResponse{}
-		reply.Recipient.ID = senderID
-		reply.Message.Text = fmt.Sprintf("%s - coming soon 🤠", msgEvnt.Title)
-		sendResponse(reply)
-	} else {
+
+	if postbackHandler, ok := postbackHandlers[msgEvnt.Payload]; ok {
 		postbackHandler(msgEvnt.Payload, senderID)
+		return
+	} else if postbackHandler, ok := postbackHandlers[msgEvnt.Title]; ok {
+		postbackHandler(msgEvnt.Payload, senderID)
+		return
 	}
+
+	reply := templateResponse{}
+	reply.Recipient.ID = senderID
+	reply.Message.Text = fmt.Sprintf("%s - coming soon 🤠", msgEvnt.Title)
+	sendResponse(reply)
 }
 
 func handleMessageEvent(msgEvnt messageEvent, senderID string) {
@@ -102,6 +109,15 @@ func handleTextMessageEvent(msgEvnt messageEvent, senderID string) {
 
 	reply.Message.Attachment.Payload.Buttons = []button{matchSchedulesPostbackBtn, leagueHighlightsBtn, leagueTablePostbackBtn}
 	sendResponse(reply)
+}
+
+func handleQuickReplyEvent(msgEvnt messageEvent, senderID string) {
+	payload := msgEvnt.QuickReply.Payload
+	if strings.Contains(payload, "match-schedules-postback-") {
+		handleMatchSchedulesPostbackEvent(payload, senderID)
+		return
+	}
+	log.Println("Unrecognized payload")
 }
 
 func sendResponse(payload interface{}) {

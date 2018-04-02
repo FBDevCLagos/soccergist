@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/FBDevCLagos/soccergist/implementations/go/data/football_data"
+	"github.com/FBDevCLagos/soccergist/implementations/go/data/reddit"
 )
 
 type League interface {
@@ -9,6 +10,12 @@ type League interface {
 	PresentMatchday() int
 	TotalMatchdays() int
 	GetMatchdayFixtures(int) *football_data.MatchDayFixtures
+}
+
+type Highlight struct {
+	Title string
+	Name  string
+	URLs  []string
 }
 
 type LeagueTableTeamInfo struct {
@@ -39,6 +46,23 @@ func FirstFour(table *football_data.LeagueTable) []LeagueTableTeamInfo {
 	}
 
 	return info
+}
+
+func Highlights(after string) (highlights []Highlight) {
+	posts := reddit.GetHighlightPosts(after)
+
+	for _, post := range posts {
+		if len(post.URLs) == 0 {
+			continue
+		}
+
+		highlights = append(highlights, Highlight{
+			Title: post.Title,
+			Name:  post.Name,
+			URLs:  post.URLs,
+		})
+	}
+	return
 }
 
 var teamsLogo = map[string]string{
