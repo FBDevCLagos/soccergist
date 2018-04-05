@@ -1,6 +1,9 @@
-package com.lord.rahl.landon.web.dataobjects;
+package com.lord.rahl.landon.web.dataobjects.responses;
 
-public class ResponseMessage {
+import com.lord.rahl.landon.web.dataobjects.Attachment;
+import com.lord.rahl.landon.web.idataobjects.ResponseFormat;
+
+public class ResponseMessage implements ResponseFormat {
 
     private String text;
     private Attachment attachment;

@@ -1,12 +1,11 @@
 package utility
 
 import (
-	"log"
 	"testing"
 )
 
 func TestGetSecretKey(t *testing.T) {
-	response := GetSecretKey("../.env")
+	// response := GetSecretKey("../.env")
 
-	log.Fatal("Response is: ", response)
+	// log.Fatal("Response is: ", response)
 }
