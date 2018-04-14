@@ -27,6 +27,7 @@ _WIP_
 * Shodipo Ayomide
 * Alugbin LordRAhl Abiodun
 * Onyemenam Ndubuisi
+* Orija Mosope Isaac
 
 ## Licence
 The learning map is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
