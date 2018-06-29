@@ -1,0 +1,6 @@
+# Quick Reply
+_- Oscar_
+
+The list template is one of the most beloved response template. However, as with all templates, it has specific use cases for which it makes sense. One use case is when you want to present the user with an informed list of options to choose from. So say for the next stage in your conversation with the user you want to provide them with a brief overview of where each option in a list of choices will lead to, a list template should be apt for the job. Using the list template you set each option as a list item with a title for the item, 80 character summary of the item and then a button for the user to make the selection.
+
+From the docs: "The list template is a list of 2-4 structured items with an optional global button rendered at the bottom. Each item may contain a thumbnail image, title, subtitle, and one button. You may also specify a default_action object that sets a URL that will be opened in the Messenger webview when the item is tapped." Also by, default the first item in the list will be rendered as a cover image but you can disable this by setting '"top_element_style": "compact"' in the template. (The default is '"top_element_style": "large"'). Note the Messenger web client currently only renders compact mode irrespective so you'll need to test on mobile to view it.
