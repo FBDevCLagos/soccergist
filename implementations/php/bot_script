@@ -13,7 +13,7 @@ $pmessage = $input['entry'][0]['messaging'][0]['postback']['payload'];
 function curl($input) {
 	global $accessToken; 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.6/me/thread_settings?access_token='.$accessToken);
+	curl_setopt($ch, CURLOPT_URL, "https://graph.facebook.com/v2.6/me/thread_settings?access_token=".$accessToken);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
@@ -48,8 +48,7 @@ function curl1($response,$encode){
    }
    curl_close($ch);  
  }
-
-
+ 
 curl1($response,1);
 exit;
 ?>
